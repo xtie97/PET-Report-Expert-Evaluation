@@ -1,0 +1,117 @@
+[
+    {
+        "caseNumber": 1,
+        "indications": [
+            "Indication: XXXX"
+        ],
+        "findings": [
+            "Findings:",
+            "Head/neck:",
+            "Chest: ",
+            "Abdomen/pelvis:",
+            "Musculoskeletal: "
+        ],
+        "clinical_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ],
+        "ai_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ]
+    },
+    {
+        "caseNumber": 2,
+        "indications": [
+            "Indication: XXXX"
+        ],
+        "findings": [
+            "Findings:",
+            "Head/neck:",
+            "Chest: ",
+            "Abdomen/pelvis:",
+            "Musculoskeletal: "
+        ],
+        "clinical_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ],
+        "ai_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ]
+    },
+    {
+        "caseNumber": 3,
+        "indications": [
+            "Indication: XXXX"
+        ],
+        "findings": [
+            "Findings:",
+            "Head/neck:",
+            "Chest: ",
+            "Abdomen/pelvis:",
+            "Musculoskeletal: "
+        ],
+        "clinical_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ],
+        "ai_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ]
+    },
+    {
+        "caseNumber": 4,
+        "indications": [
+            "Indication: XXXX"
+        ],
+        "findings": [
+            "Findings:",
+            "Head/neck:",
+            "Chest: ",
+            "Abdomen/pelvis:",
+            "Musculoskeletal: "
+        ],
+        "clinical_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ],
+        "ai_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ]
+    },
+    {
+        "caseNumber": 5,
+        "indications": [
+            "Indication: XXXX"
+        ],
+        "findings": [
+            "Findings:",
+            "Head/neck:",
+            "Chest: ",
+            "Abdomen/pelvis:",
+            "Musculoskeletal: "
+        ],
+        "clinical_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ],
+        "ai_impression": [
+            "[1] XXXX ",
+            "[2] XXXX ",
+            "[3] XXXX"
+        ]
+    }
+]

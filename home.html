@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Case Review Page</title>
+    <style>
+        .section { margin: 20px 0; }
+        .score-input { width: 50px; }
+        .label {line-height: 3; }
+        .frame {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        #case { display: none; }  /* Hide the case div by default */
+
+        .impression-section { display: flex; justify-content: space-between; }
+        .impression-block { 
+            width: 49%; 
+            border: 1px solid #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .scoring-block { 
+            width: 48%; 
+            padding: 20px;
+        }
+        #highlightButtons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1000;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .button-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .small-button {
+            width: 150px;
+            height: 40px;
+            margin-bottom: 10px;  /* Adjust this value as needed */
+        }
+        .large-button {
+            font-size: 18px;
+            width: 150px;
+            height: 40px;
+            margin-bottom: 10px;  /* Adjust this value as needed */
+        }
+        #load_case_button {
+            width: 120px;
+            height: 36px;
+            margin-left: 20px;
+            margin-bottom: 10;
+            margin-top: 0px;
+            font-size: 18px;
+        }
+
+        #clear_button {
+            width: 145px;
+            height: 50px;
+            margin-top: 50px;  /* Or however much space you want between the lines */
+            font-size: 15px;
+        }
+
+
+        textarea { width: 99%; height: 100px; }
+    </style>
+</head>
+<body>
+    <!-- 
+    <div id="highlightButtons">
+        <button onclick="highlightSelection('yellow')">Yellow</button>
+        <button onclick="highlightSelection('green')">Green</button>
+        <button onclick="highlightSelection('olive')">Olive</button>
+        <br />
+        <button onclick="highlightSelection('blue')">Blue</button>
+        <button onclick="highlightSelection('red')">Red</button>
+        <button onclick="removeHighlights()">Remove</button>
+    </div> 
+    <style>
+    .highlight-yellow { background-color: yellow; }
+    .highlight-green { background-color: lime; }
+    .highlight-blue { background-color: skyblue; }
+    .highlight-red { background-color: pink; }
+    .highlight-olive { background-color: olive; }
+    </style>
+    </div>
+    -->
+    <div id="case_select_div">
+        <h1>Select Case</h1>
+        <select id="case_select" style="font-size: 20px; width: 150px; height: 40px;">
+        </select>
+        <button onclick="loadCase()" id="load_case_button">Load Case</button>
+        <br />
+        <button onclick="window.open('js/unreviewed_cases.html', '_blank')" id="clear_button">Check Unreviewed Cases</button>
+        <br />
+        <button onclick="clear_cache()" id="clear_button">Clear previous records</button>
+    </div>
+    
+    <div id="case">
+        <h1 id="case_title">Case #1</h1> <!-- Make sure this line is included in your HTML -->
+        <!-- The structure of your case div remains the same, but it's now inside this hidden div -->
+        <!-- Remember to add the extra fields for AI Impression scoring -->
+        <div class="frame">
+            <h3>Indications</h3>
+            <p id="indications"></p>
+        </div>
+        <div class="frame">
+            <h3>Findings</h3>
+            <p id="findings"></p>
+        </div>
+        <div class="impression-section">
+            <div class="impression-block">
+                <h3>Clinical Impression</h3>
+                <p id="clinical_impression"></p>
+            </div>
+            <div class="impression-block">
+                <h3>AI Impression</h3>
+                <p id="ai_impression"></p>
+            </div>
+        </div>
+        <div class="impression-section">
+            <div class="scoring-block">
+                <h4>Scoring (clinical impression)</h4>
+                <!-- IDs changed to make them unique -->
+                <!--<label>Additions: -->
+                <label for="clinical_addition">Unnecessary Additions:</label><span title="The impression is not repetitive and does not include unnecessary findings." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_additions_3" name="cli_additions" value="3">
+                        <!-- <input type="radio" id="cli_additions_3" name="cli_additions" value="3" checked> -->
+                        <label for="cli_additions_3">3: No Additions</label><br>
+                        <input type="radio" id="cli_additions_2" name="cli_additions" value="2">
+                        <label for="cli_additions_2">2: Moderate Additions</label><br>
+                        <input type="radio" id="cli_additions_1" name="cli_additions" value="1">
+                        <label for="cli_additions_1">1: Excessive Additions</label><br>
+                    </div>
+                </label><br>
+                <!-- <label>Omissions: -->
+                <label for="clinical_omission">Omissions:</label><span title="The impression contains all important findings." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_omissions_3" name="cli_omissions" value="3">
+                        <label for="cli_omissions_3">3: No omissions</label><br>  
+                        <input type="radio" id="cli_omissions_2" name="cli_omissions" value="2">
+                        <label for="cli_omissions_2">2: Moderate omissions</label><br>
+                        <input type="radio" id="cli_omissions_1" name="cli_omissions" value="1">
+                        <label for="cli_omissions_1">1: Significant omissions</label><br>
+                    </div>
+                </label><br>
+                <!-- <label>Factual correctness: -->
+                <label for="clinical_correctness">Factual Correctness:</label><span title="The impression accurately represents the findings and is devoid of factual errors." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_correct_3" name="cli_correctness" value="3">
+                        <label for="cli_correct_3">3: Correct</label><br>  
+                        <input type="radio" id="cli_correct_2" name="cli_correctness" value="2">
+                        <label for="cli_correct_2">2: Partially incorrect</label><br>
+                        <input type="radio" id="cli_correct_1" name="cli_correctness" value="1">
+                        <label for="cli_correct_1">1: Substantially incorrect</label><br>
+                    </div>
+                </label><br>
+                <!--<label>Readability/Organization: --> 
+                <label for="clinical_readability">Clarity / Organization:</label><span title="The impression is unambiguous, grammatical, and well-organized." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_read_3" name="cli_readability" value="3">
+                        <label for="cli_read_3">3: Good</label><br>  
+                        <input type="radio" id="cli_read_2" name="cli_readability" value="2">
+                        <label for="cli_read_2">2: Adequate</label><br>
+                        <input type="radio" id="cli_read_1" name="cli_readability" value="1">
+                        <label for="cli_read_1">1: Poor</label><br>
+                    </div>
+                </label><br>
+                <!--<label>Interpretive/technical jargon: --> 
+                <label for="clinical_interp"> Interpretive / Technical jargon: </label><span title="The impression provides an interpretation of the findings and avoids using unnecessary radiologic jargon or details." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_interp_1" name="cli_interp" value="3">
+                        <label for="cli_interp_1">3: Appropriate</label><br>  
+                        <input type="radio" id="cli_interp_2" name="cli_interp" value="2">
+                        <label for="cli_interp_2">2: Partially appropriate</label><br>
+                        <input type="radio" id="cli_interp_3" name="cli_interp" value="1">
+                        <label for="cli_interp_3">1: Inappropriate</label><br>
+                    </div>
+                </label><br>
+                <!--<label>Appropriate recommendations: -->
+                <label for ="clinical_recommendation">Appropriate Recommendations:</label><span title="The recommendations for patient management, if applicable, are clinically valid." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_recommend_3" name="cli_recommend" value="3">
+                        <label for="cli_recommend_3">3: Appropriate</label><br>  
+                        <input type="radio" id="cli_recommend_2" name="cli_recommend" value="2">
+                        <label for="cli_recommend_2">2: Partially appropriate</label><br>
+                        <input type="radio" id="cli_recommend_1" name="cli_recommend" value="1">
+                        <label for="cli_recommend_1">1: Inappropriate</label><br>
+                    </div>
+                </label><br>
+                <!--<label>Overall quality: -->
+                <label for ="clinical_quality">Overall Quality:</label><span title="Given the impression as an initial draft, consider how many changes would you make to render it suitable for use." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="cli_score_5" name="cli_score" value="5">
+                        <label for="cli_score_5">5: No changes needed (acceptable)</label><br>
+                        <input type="radio" id="cli_score_4" name="cli_score" value="4">
+                        <label for="cli_score_4">4: Minimal changes needed (acceptable) </label><br>
+                        <input type="radio" id="cli_score_3" name="cli_score" value="3">
+                        <label for="cli_score_3">3: Moderate changes needed (acceptable)</label><br>  
+                        <input type="radio" id="cli_score_2" name="cli_score" value="2">
+                        <label for="cli_score_2">2: Signicant changes needed (unacceptable)</label><br>
+                        <input type="radio" id="cli_score_1" name="cli_score" value="1">
+                        <label for="cli_score_1">1: Unusable (unacceptable)</label><br>
+                    </div>
+                </label><br>
+                <label>Comments: <textarea id="cli_comments"></textarea></label><br>
+                <!--<button onclick="submitScores()">Submit Clinical Scores</button> -->
+            </div>
+            <div class="scoring-block"> 
+                <h4>Scoring (AI impression)</h4>
+                <!-- IDs changed to make them unique -->
+                <label for="ai_addition_">Unnecessary Additions:</label><span title="The impression is not repetitive and does not include unnecessary findings." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_additions_3" name="ai_additions" value="3">
+                        <label for="ai_additions_3">3: No Additions</label><br>  
+                        <input type="radio" id="ai_additions_2" name="ai_additions" value="2">
+                        <label for="ai_additions_2">2: Moderate Additions</label><br>
+                        <input type="radio" id="ai_additions_1" name="ai_additions" value="1">
+                        <label for="ai_additions_1">1: Excessive Additions</label><br>
+                    </div>
+                </label><br>
+                <label for="ai_omissions_">Omissions:</label><span title="The impression contains all important findings." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_omissions_3" name="ai_omissions" value="3">
+                        <label for="ai_omissions_3">3: No omissions</label><br>  
+                        <input type="radio" id="ai_omissions_2" name="ai_omissions" value="2">
+                        <label for="ai_omissions_2">2: Moderate omissions</label><br>
+                        <input type="radio" id="ai_omissions_1" name="ai_omissions" value="1">
+                        <label for="ai_omissions_1">1: Significant omissions</label><br>
+                    </div>
+                </label><br>
+                <label for="ai_correctness_">Factual Correctness:</label><span title="The impression accurately represents the findings and is devoid of factual errors." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_correct_3" name="ai_correctness" value="3">
+                        <label for="ai_correct_3">3: Correct</label><br>  
+                        <input type="radio" id="ai_correct_2" name="ai_correctness" value="2">
+                        <label for="ai_correct_2">2: Partially incorrect</label><br>
+                        <input type="radio" id="ai_correct_1" name="ai_correctness" value="1">
+                        <label for="ai_correct_1">1: Substantially incorrect</label><br>
+                    </div>
+                </label><br>
+                <label for="ai_readability_">Clarity / Organization:</label><span title="The impression is unambiguous, grammatical, and well-organized." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_read_3" name="ai_readability" value="3">
+                        <label for="ai_read_3">3: Good</label><br>  
+                        <input type="radio" id="ai_read_2" name="ai_readability" value="2">
+                        <label for="ai_read_2">2: Adequate</label><br>
+                        <input type="radio" id="ai_read_1" name="ai_readability" value="1">
+                        <label for="ai_read_1">1: Poor</label><br>
+                    </div>
+                </label><br>
+                <label for="ai_interp_"> Interpretive / Technical jargon: </label><span title="The impression provides an interpretation of the findings and avoids using unnecessary radiologic jargon or details." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_interp_3" name="ai_interp" value="3">
+                        <label for="ai_interp_3">3: Appropriate</label><br>  
+                        <input type="radio" id="ai_interp_2" name="ai_interp" value="2">
+                        <label for="ai_interp_2">2: Partially appropriate</label><br>
+                        <input type="radio" id="ai_interp_1" name="ai_interp" value="1">
+                        <label for="ai_interp_1">1: Inappropriate</label><br>
+                    </div>
+                </label><br>
+                <label for ="ai_recommendation_">Appropriate Recommendations:</label><span title="The recommendations for patient management, if applicable, are clinically valid." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_recommend_3" name="ai_recommend" value="3">
+                        <label for="ai_recommend_3">3: Appropriate</label><br>  
+                        <input type="radio" id="ai_recommend_2" name="ai_recommend" value="2">
+                        <label for="ai_recommend_2">2: Partially appropriate</label><br>
+                        <input type="radio" id="ai_recommend_1" name="ai_recommend" value="1">
+                        <label for="ai_recommend_1">1: Inappropriate</label><br>
+                    </div>
+                </label><br>
+                <label for ="ai_quality_">Overall Quality:</label><span title="Given the impression as an initial draft, consider how many changes would you make to render it suitable for use." style="font-weight: bold; color: red;">?</span>
+                    <div>
+                        <input type="radio" id="ai_score_5" name="ai_score" value="5">
+                        <label for="ai_score_5">5: No changes needed (acceptable)</label><br>
+                        <input type="radio" id="ai_score_4" name="ai_score" value="4">
+                        <label for="ai_score_4">4: Minimal changes needed (acceptable)</label><br>
+                        <input type="radio" id="ai_score_3" name="ai_score" value="3">
+                        <label for="ai_score_3">3: Moderate changes needed (acceptable)</label><br>  
+                        <input type="radio" id="ai_score_2" name="ai_score" value="2">
+                        <label for="ai_score_2">2: Signicant changes needed (unacceptable)</label><br>
+                        <input type="radio" id="ai_score_1" name="ai_score" value="1">
+                        <label for="ai_score_1">1: Unusable (unacceptable)</label><br>
+                    </div>
+                </label><br>
+                <label>Comments: <textarea id="ai_comments"></textarea></label><br>
+            </div>
+        </div>
+        <div class="button-block">
+            <button onclick="submitScores()" class="large-button">Submit Scores</button>
+            <button onclick="loadNextCase()" class="large-button">Next Case</button>
+            <button onclick="loadPreviousCase()" class="large-button">Previous Case</button>
+            <button onclick="downloadScores()" class="small-button">Download All Scores</button>
+        </div>
+    </div>
+    <script src="js/cases.js"></script>
+    <script src="js/scores.js"></script>
+    <script src="js/highlight.js"></script>
+</body>
+</html>

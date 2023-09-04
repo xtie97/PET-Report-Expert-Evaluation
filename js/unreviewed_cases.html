@@ -1,0 +1,29 @@
+<div id="unreviewed_cases"></div>
+
+<script>
+window.onload = function() {
+    var totalCases = 24;
+
+    // Load the scores from localStorage
+    var allScores = JSON.parse(localStorage.getItem('scores')) || [];
+    // Get the case numbers from the scores
+    var scoredCases = allScores.map(score => score.caseNumber);
+    // Remove duplicates
+    scoredCases = [...new Set(scoredCases)];
+
+    var reviewedCases = JSON.parse(localStorage.getItem('reviewedCases')) || [];
+
+    var allCases;  // You'll need to fetch this from your JSON file
+    // all cases are 1 - totalCases
+    allCases = Array.from(Array(totalCases).keys()).map(x => x + 1);
+
+    // Find the cases that haven't been reviewed yet
+    var unreviewedCases = allCases.filter(caseNumber => !scoredCases.includes(caseNumber));
+
+    // Update the content of the unreviewed_cases element to show the list of unreviewed cases
+    var unreviewedCasesElement = document.getElementById('unreviewed_cases');
+    //adjust the font size
+    unreviewedCasesElement.style.fontSize = "25px";
+    unreviewedCasesElement.textContent = "Unreviewed cases: " + unreviewedCases.join(', '); 
+}
+</script>
